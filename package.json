@@ -1,0 +1,32 @@
+{
+  "name": "grpc-mongodb-product-api",
+  "version": "1.0.0",
+  "description": "A gRPC server for product management using MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gRPC",
+    "MongoDB",
+    "product",
+    "API"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.11.2",
+    "@grpc/proto-loader": "^0.7.13",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "grpc-web": "^1.5.0",
+    "mongoose": "^8.6.1",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package customer;
+
+service CustomerService {
+  rpc CreateCustomer (CustomerRequest) returns (CustomerResponse);
+  rpc GetCustomer (GetCustomerRequest) returns (CustomerResponse);
+  rpc UpdateCustomer (CustomerRequest) returns (CustomerResponse);
+  rpc DeleteCustomer (DeleteCustomerRequest) returns (DeleteCustomerResponse);
+  rpc ListCustomers (ListCustomersRequest) returns (ListCustomersResponse);
+}
+
+message CustomerRequest {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+}
+
+message GetCustomerRequest {
+  string id = 1;
+}
+
+message DeleteCustomerRequest {
+  string id = 1;
+}
+
+message CustomerResponse {
+  string message = 0;  // Optional success message
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+}
+
+message DeleteCustomerResponse {
+  string message = 1;
+}
+
+message ListCustomersRequest {}
+
+message ListCustomersResponse {
+  repeated CustomerResponse customers = 1;
+}

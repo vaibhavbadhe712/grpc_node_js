@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package myapp;
+
+import "product.proto";
+import "customer.proto";
+
+
+
+message GetProductAndCustomerRequest {
+  string product_id = 1;
+  string customer_id = 2;
+}
+
+message GetProductAndCustomerResponse {
+  product.ProductResponse product = 1;
+  customer.CustomerResponse customer = 2;
+}

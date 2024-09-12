@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package product;
+
+service ProductService {
+  rpc CreateProduct (ProductRequest) returns (CreateProductResponse);
+  rpc GetProduct (GetProductRequest) returns (ProductResponse);
+  rpc UpdateProduct (ProductRequest) returns (UpdateProductResponse);
+  rpc DeleteProduct (DeleteProductRequest) returns (DeleteProductResponse);
+  rpc ListProducts (ListProductsRequest) returns (ListProductsResponse);
+  rpc SearchProducts (SearchProductsRequest) returns (ListProductsResponse);
+}
+
+message ProductRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message DeleteProductRequest {
+  string id = 1;
+}
+
+message ProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+}
+
+message CreateProductResponse {
+  oneof result {
+    string message = 1;
+    ProductResponse product = 2;
+  }
+}
+
+message UpdateProductResponse {
+  oneof result {
+    string message = 1;
+    ProductResponse product = 2;
+  }
+}
+
+message DeleteProductResponse {
+  string message = 1;
+}
+
+// Updated ListProductsRequest to include pagination parameters
+message ListProductsRequest {
+  int32 page = 1;   // The requested page number
+  int32 limit = 2;  // The number of products per page
+}
+
+// Updated ListProductsResponse to include pagination information
+message ListProductsResponse {
+  repeated ProductResponse products = 1;
+  int32 totalItems = 2;       // Total number of products available
+  int32 currentPage = 3;      // The current page being returned
+  int32 totalPages = 4;       // Total number of pages
+  int32 limit = 5;            // The number of items per page (same as in the request)
+}
+
+message SearchProductsRequest {
+  string name = 1;      // Optional name filter
+  double price = 2;     // Optional price filter
+}
