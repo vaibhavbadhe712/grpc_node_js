@@ -109,7 +109,9 @@ const customerController = {
                     id: customer.productId._id.toString(),
                     name: customer.productId.name,
                     description: customer.productId.description,
-                    price: customer.productId.price
+                    price: customer.productId.price,
+                    createdAt :customer.productId.createdAt ,
+                    updatedAt : customer.productId.updatedAt
                 } : null
             }));
             callback(null, { customers: customerList });
