@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package customer;
 
+// The CustomerService service definition.
 service CustomerService {
   rpc CreateCustomer (CustomerRequest) returns (CustomerResponse);
   rpc GetCustomer (GetCustomerRequest) returns (CustomerResponse);
@@ -10,35 +11,57 @@ service CustomerService {
   rpc ListCustomers (ListCustomersRequest) returns (ListCustomersResponse);
 }
 
+// Request message for creating or updating a customer.
 message CustomerRequest {
   string id = 1;
   string name = 2;
   string email = 3;
   string phone = 4;
+  string productId = 5; // Product reference
 }
 
+// Request message for retrieving a customer by ID.
 message GetCustomerRequest {
   string id = 1;
 }
 
+// Request message for deleting a customer by ID.
 message DeleteCustomerRequest {
   string id = 1;
 }
 
+// Response message for customer operations.
 message CustomerResponse {
-  string message = 0;  // Optional success message
-  string id = 1;
-  string name = 2;
-  string email = 3;
-  string phone = 4;
+  string message = 1; // Optional success message
+  string id = 2;
+  string name = 3;
+  string email = 4;
+  string phone = 5;
+  string productId = 6; // Product reference
+  
+  // Product details (if available)
+  Product product = 7;  // Include Product details in the response
 }
 
+// Response message for deleting a customer.
 message DeleteCustomerResponse {
   string message = 1;
 }
 
+// Request message for listing all customers.
 message ListCustomersRequest {}
 
+// Response message for listing customers.
 message ListCustomersResponse {
   repeated CustomerResponse customers = 1;
+}
+
+// Product details message.
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;  // Add other product fields as needed
+  double price = 4; 
+  string createdAt = 5;
+  string updatedAt = 6;       // Include product price
 }
