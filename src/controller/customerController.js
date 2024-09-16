@@ -44,7 +44,7 @@ const customerController = {
                     createdAt :customer.productId.createdAt ,
                     updatedAt : customer.productId.updatedAt
             } : null;
-    
+     
             callback(null, {
                 message: 'Customer details retrieved successfully',
                 id: customer._id.toString(),
@@ -54,7 +54,7 @@ const customerController = {
                 productId: customer.productId ? customer.productId._id.toString() : null,
                 product: productDetails // Include product details if available
             });
-        } catch (error) {
+        } catch (error) { 
             grpcErrorHandler(error, callback);
         }
     },

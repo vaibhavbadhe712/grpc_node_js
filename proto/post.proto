@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package post;
+
+service PostService {
+  rpc CreatePost (CreatePostRequest) returns (CreatePostResponse);
+  rpc GetPost (GetPostRequest) returns (PostResponse);
+  rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse);
+  rpc DeletePost (DeletePostRequest) returns (DeletePostResponse);
+  rpc ListPosts (ListPostsRequest) returns (ListPostsResponse);
+}
+
+message CreatePostRequest {
+  string postName = 1;
+  string userId = 2;
+  repeated Address address = 3;
+  repeated Education education = 4;
+  string description = 5;
+  string productId = 6;
+  string customerId = 7;
+}
+
+message Address {
+  string state = 1;
+  string pincode = 2;
+  string country = 3;
+  string city = 4;
+}
+
+message Education {
+  string schoolName = 1;
+  string collegeName = 2;
+  string companyName = 3;
+  int32 experience = 4;  // Changed experience to int32
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message UpdatePostRequest {
+  string id = 1;
+  string postName = 2;
+  string userId = 3;
+  repeated Address address = 4;
+  repeated Education education = 5;
+  string description = 6;
+  string productId = 7;
+  string customerId = 8;
+}
+
+message DeletePostRequest {
+  string id = 1;
+}
+
+// Define User, Product, and Customer messages
+message User {
+  string id = 1;  // UUID for userId
+  string fullName = 2;
+  string email = 3; // Email address of the user
+  string groupId = 4; // Group ID of the user
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+}
+
+message Customer {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+  Product productId = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+}
+
+message PostResponse {
+  string id = 1;
+  string postName = 2;
+  User userId = 3;  // Updated to User message
+  repeated Address address = 4;
+  repeated Education education = 5;
+  string description = 6;
+  Product productId = 7; // Updated to Product message
+  Customer customerId = 8; // Updated to Customer message
+}
+
+message CreatePostResponse {
+  oneof result {
+    string message = 1;
+    PostResponse post = 2;
+  }
+}
+
+message UpdatePostResponse {
+  oneof result {
+    string message = 1;
+    PostResponse post = 2;
+  }
+}
+
+message DeletePostResponse {
+  string message = 1;
+}
+
+message ListPostsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message ListPostsResponse {
+  repeated PostResponse posts = 1;
+  int32 totalItems = 2;
+  int32 currentPage = 3;
+  int32 totalPages = 4;
+  int32 limit = 5;
+}

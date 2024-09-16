@@ -4,7 +4,8 @@ package myapp;
 
 import "product.proto";
 import "customer.proto";
-
+import "user.proto";
+import "post.proto";
 
 
 message GetProductAndCustomerRequest {

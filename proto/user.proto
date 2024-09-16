@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package user;
+
+// The User message represents a user in the system.
+message User {
+  string id = 1; // User ID
+  string fullName = 2; // Full name of the user
+  string email = 3; // Email address of the user
+  string groupId = 4; // Group ID of the user
+  string userId = 5; // User ID (generated)
+}
+
+// The SignUpRequest message is used for user registration.
+message SignUpRequest {
+  string fullName = 1; // Full name of the user
+  string email = 2; // Email address of the user
+  string password = 3; // Password of the user
+  string groupId = 4; // Group ID of the user
+}
+
+// The SignUpResponse message is returned after a successful sign-up.
+message SignUpResponse {
+  string message = 1; // Response message
+  User user = 2; // The created user
+}
+
+// The SignInRequest message is used for user authentication.
+message SignInRequest {
+  string email = 1; // Email address of the user
+  string password = 2; // Password of the user
+}
+
+// The SignInResponse message is returned after a successful sign-in.
+message SignInResponse {
+  string message = 1; // Response message
+  string token = 2; // JWT token
+  User user = 3; // The authenticated user
+}
+
+// The UserService defines the gRPC service for user operations.
+service UserService {
+  // RPC method for user registration
+  rpc SignUp (SignUpRequest) returns (SignUpResponse);
+
+  // RPC method for user authentication
+  rpc SignIn (SignInRequest) returns (SignInResponse);
+}
