@@ -1,39 +1,52 @@
+// src/controllers/productController.js
 const Product = require('../model/productModel');
 const grpcErrorHandler = require('../utils/grpcErrorhandling');
 const paginate = require('../utils/paginationhandling');
+const { logRequest } = require('../utils/grpcLogger'); // Import the logging utility
 
 const productController = {
     async createProduct(call, callback) {
+        const { name, description, price } = call.request;
+        
         try {
-            const { name, description, price } = call.request;
             const product = new Product({ name, description, price });
             await product.save();
-            callback(null, {
-                message: 'Product created successfully',
-                id: product._id.toString(),
-                name: product.name,
-                description: product.description,
-                price: product.price
-            });
+
+            await logRequest(
+                'CreateProduct',
+                call.request,
+                'success',
+                { id: product._id.toString(), name: product.name, description: product.description, price: product.price },
+                null
+            );
+
+            callback(null, { message: 'Product created successfully', id: product._id.toString(), name: product.name, description: product.description, price: product.price });
         } catch (error) {
+            await logRequest('CreateProduct', call.request, 'error', null, error.message);
             grpcErrorHandler(error, callback);
         }
     },
 
     async getProduct(call, callback) {
+        const { id } = call.request;
         try {
-            const { id } = call.request;
             const product = await Product.findById(id);
             if (!product) {
+                await logRequest('GetProduct', call.request, 'error', null, 'Product not found');
                 return grpcErrorHandler({ message: 'Product not found', code: 404 }, callback);
             }
-            callback(null, {
-                id: product._id.toString(),
-                name: product.name,
-                description: product.description,
-                price: product.price
-            });
+
+            await logRequest(
+                'GetProduct',
+                call.request,
+                'success',
+                { id: product._id.toString(), name: product.name, description: product.description, price: product.price },
+                null
+            );
+
+            callback(null, { id: product._id.toString(), name: product.name, description: product.description, price: product.price });
         } catch (error) {
+            await logRequest('GetProduct', call.request, 'error', null, error.message);
             grpcErrorHandler(error, callback);
         }
     },
@@ -45,12 +58,7 @@ const productController = {
             if (!product) {
                 return grpcErrorHandler({ message: 'Product not found', code: 404 }, callback);
             }
-            callback(null, {
-                id: product._id.toString(),
-                name: product.name,
-                description: product.description,
-                price: product.price
-            });
+            callback(null, { id: product._id.toString(), name: product.name, description: product.description, price: product.price });
         } catch (error) {
             grpcErrorHandler(error, callback);
         }
@@ -71,14 +79,12 @@ const productController = {
 
     async listProducts(call, callback) {
         try {
-            const { page, limit } = call.request; // Extract page and limit from the request
-            const pageNum = parseInt(page, 10) || 1; // Ensure it's a valid number
+            const { page, limit } = call.request;
+            const pageNum = parseInt(page, 10) || 1;
             const limitNum = parseInt(limit, 10) || 10;
 
-            // Use the paginate utility
             const paginationResult = await paginate(Product, {}, pageNum, limitNum);
 
-            // Map product list and ensure correct page data is returned
             const productList = paginationResult.items.map(product => ({
                 id: product._id.toString(),
                 name: product.name,
@@ -86,12 +92,11 @@ const productController = {
                 price: product.price
             }));
 
-            // Include a message field in the response
             callback(null, {
                 message: 'Products retrieved successfully',
                 products: productList,
                 totalItems: paginationResult.totalItems,
-                currentPage: paginationResult.currentPage, // Correct page is now sent
+                currentPage: paginationResult.currentPage,
                 totalPages: paginationResult.totalPages,
                 limit: paginationResult.limit
             });
@@ -99,23 +104,21 @@ const productController = {
             grpcErrorHandler(error, callback);
         }
     },
-    
-        async searchProducts(call, callback) {
+
+    async searchProducts(call, callback) {
         try {
             const { name, price, page, limit } = call.request;
             const pageNum = parseInt(page, 10) || 1;
             const limitNum = parseInt(limit, 10) || 10;
 
-            // Build dynamic search query
             const searchCriteria = {};
             if (name) {
-                searchCriteria.name = { $regex: name, $options: 'i' }; // Case-insensitive search
+                searchCriteria.name = { $regex: name, $options: 'i' };
             }
             if (price) {
                 searchCriteria.price = price;
             }
 
-            // Use the paginate utility
             const paginationResult = await paginate(Product, searchCriteria, pageNum, limitNum);
 
             const productList = paginationResult.items.map(product => ({
@@ -137,6 +140,5 @@ const productController = {
         }
     }
 };
-
 
 module.exports = productController;

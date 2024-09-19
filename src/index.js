@@ -9,7 +9,7 @@ const customerService = require('./services/customerService');
 const userService = require('./services/userService');
 const { withAuthentication } = require('./middleware/authMiddleware'); // Import the auth middleware
 const postService = require('./services/postsService');
-
+ const {grpcLoggerMiddleware} =require('./middleware/grpcLoggerMiddleware');
 // Log environment variables to verify they are loaded
 console.log('MONGO_URI:', process.env.MONGO_URI);
 console.log('GRPC_PORT:', process.env.GRPC_PORT);
@@ -27,6 +27,11 @@ const combinedProto = grpc.loadPackageDefinition(packageDefinition);
 
 const server = new grpc.Server();
 
+const wrappedProductService = {};
+Object.keys(productService).forEach((methodName) => {
+  wrappedProductService[methodName] = grpcLoggerMiddleware(productService[methodName]);
+});
+
 // Add services with authentication middleware
 // server.addService(
 //   combinedProto.product.ProductService.service,
@@ -36,10 +41,13 @@ server.addService(
   combinedProto.customer.CustomerService.service,
   withAuthentication(customerService)
 );
-server.addService(combinedProto.post.PostService.service, postService);
-server.addService(combinedProto.product.ProductService.service, productService);
+server.addService(combinedProto.post.PostService.service, postService,wrappedProductService);
+server.addService(
+  combinedProto.product.ProductService.service,
+  wrappedProductService
+);
 
- 
+
 server.addService(combinedProto.user.UserService.service, userService);
 
 const PORT = process.env.GRPC_PORT || '50051';
